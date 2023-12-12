@@ -1,0 +1,97 @@
+---
+import Header from "@/components/Header.astro";
+import Layout from "@/layouts/Layout.astro";
+import CardTransaction from "@/components/CardTransaction";
+
+import { ScrollArea } from "@/components/ui/ScrollArea";
+
+const { cookies, redirect } = Astro;
+
+const userId = cookies.get("user-id");
+
+if (!userId) {
+  return redirect("/login");
+}
+
+const { body } = await fetch(
+  `http://localhost:8080/api/transaction/account/${userId.value}`,
+).then((res) => res.json());
+
+export interface Transaction {
+  reference: string;
+  amount: number;
+  metadata?: {
+    recipient_id?: number;
+    sender_id?: number;
+    username: string;
+    originalReference?: string;
+  };
+  created_at: string;
+  purpose: "deposit" | "withdrawal" | "transfer" | "reversal";
+  txn_type: "credit" | "debit";
+  accountId: number;
+}
+
+const transactions: Transaction[] = body?.map((transaction: Transaction) => {
+  const {
+    reference,
+    amount,
+    metadata,
+    created_at,
+    purpose,
+    txn_type,
+    accountId,
+  } = transaction;
+
+  const formatAmount = Intl.NumberFormat("es-ES", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 2,
+  }).format(amount);
+
+  const dateFormat = new Date(created_at).toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    weekday: "short",
+  });
+
+  return {
+    reference,
+    amount: formatAmount,
+    metadata,
+    created_at: dateFormat,
+    purpose,
+    txn_type,
+    accountId,
+  };
+});
+---
+
+<Layout title="Mis transacciones">
+  <Header />
+  <section class="max-w-4xl mx-auto flex flex-col h-screen">
+    <h1
+      class="text-3xl font-medium text-center border-b-2 border-gray-200 pb-6 mt-6"
+    >
+      Últimas Transacciones
+    </h1>
+    <ScrollArea className="rounded-md mb-10" client:load>
+      <div class="flex flex-col mt-10 gap-4">
+        {
+          transactions.length === 0 ? (
+            <div class="flex flex-col items-center justify-center">
+              <p class="text-gray-500 text-lg mt-4">No tienes transacciones</p>
+            </div>
+          ) : (
+            transactions.map((transaction) => {
+              return <CardTransaction transaction={transaction} client:load />;
+            })
+          )
+        }
+      </div>
+    </ScrollArea>
+  </section>
+</Layout>

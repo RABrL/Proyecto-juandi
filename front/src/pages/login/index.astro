@@ -1,0 +1,16 @@
+---
+import LoginForm from "@/components/LoginForm";
+import Layout from "@/layouts/Layout.astro";
+
+const { cookies, redirect } = Astro;
+
+const userId = cookies.get("user-id");
+
+if (userId) {
+  return redirect("/");
+}
+---
+
+<Layout title="Ingresa a tu cuenta">
+  <LoginForm client:load />
+</Layout>

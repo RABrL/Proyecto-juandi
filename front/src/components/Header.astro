@@ -1,0 +1,27 @@
+---
+import Logo from "./Logo";
+import BurgerMenu from "./BurgerMenu";
+import NavItem from "./NavItem.astro";
+import LogoutButton from "./LogoutButton";
+---
+
+<header class="flex justify-between items-center h-24">
+  <section class="flex">
+    <Logo />
+  </section>
+  <section class="lg:flex items-center space-x-8 hidden">
+    <nav
+      class="flex text-slate-500 relative justify-center text-base font-medium space-x-8"
+    >
+      <NavItem href="/transfer">Hacer transacción</NavItem>
+      <NavItem href="/transactions">Mis transacciones</NavItem>
+    </nav>
+    <div class="lg:border-r py-4"></div>
+    <div class="justify-end">
+      <LogoutButton client:load />
+    </div>
+  </section>
+  <section class="relative z-50 lg:hidden flex items-center space-x-4">
+    <BurgerMenu client:media="(max-width: 1024px)" />
+  </section>
+</header>

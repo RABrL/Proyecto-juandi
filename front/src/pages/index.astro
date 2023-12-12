@@ -1,0 +1,60 @@
+---
+import Header from "@/components/Header.astro";
+import Layout from "../layouts/Layout.astro";
+
+const { cookies, redirect } = Astro;
+
+const userId = cookies.get("user-id");
+
+if (!userId) {
+  return redirect("/login");
+}
+
+const {
+  body: { username },
+} = await fetch(`http://localhost:8080/api/users/${userId.value}`).then((res) =>
+  res.json(),
+);
+
+const {
+  body: { balance },
+} = await fetch(`http://localhost:8080/api/accounts/${userId.value}`).then(
+  (res) => res.json(),
+);
+
+const balanceFormat = Intl.NumberFormat("es-Es", {
+  style: "currency",
+  currency: "COP",
+}).format(balance);
+---
+
+<Layout title="Bienvenido a xxxxx">
+  <Header />
+  <section class="mt-16 mx-auto flex flex-col gap-8">
+    <h1 class="text-center font-medium text-4xl">
+      Bienvenido  <span class="text-blue-700 uppercase">{username}</span>
+    </h1>
+    <div class="text-center border-b border-gray-300 pb-10">
+      <h class="text-3xl">Tienes en tu cuenta</h>
+      <h3 class="text-xl font-medium">{balanceFormat}</h3>
+    </div>
+    <h2 class="text-center text-4xl">Acciones</h2>
+    <div class="grid grid-col-2 gap-2 text-xl text-center">
+      <a
+        href="/deposit"
+        class="py-4 px-2 hover:bg-gray-200 transition-colors 300 rounded"
+        >Depositar</a
+      >
+      <a
+        href="/withdraw"
+        class="py-4 px-2 hover:bg-gray-200 transition-colors 300 rounded"
+        >Retirar</a
+      >
+      <a
+        href="/transfer"
+        class="py-4 px-2 hover:bg-gray-200 transition-colors 300 rounded"
+        >Enviar</a
+      >
+    </div>
+  </section>
+</Layout>

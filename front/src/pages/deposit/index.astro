@@ -1,0 +1,23 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import DepositForm from "@/components/DepositForm";
+
+const { cookies, redirect } = Astro;
+
+const userId = cookies.get("user-id");
+
+if (!userId) {
+  return redirect("/login");
+}
+const {
+  body: { id },
+} = await fetch(`http://localhost:8080/api/accounts/${userId.value}`).then(
+  (res) => res.json(),
+);
+---
+
+<Layout title="Depositar">
+  <Header />
+  <DepositForm accountId={Number(id)} client:load />
+</Layout>

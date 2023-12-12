@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - juandi-db:/var/lib/mysql
+    ports:
+      - 3307:3306
+
+volumes:
+  juandi-db:
+
+
+networks:
+  default:
+    name: juandi-app

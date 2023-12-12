@@ -1,0 +1,23 @@
+---
+import Header from "@/components/Header.astro";
+import Layout from "@/layouts/Layout.astro";
+import WithdrawForm from "@/components/WithdrawForm";
+
+const { cookies, redirect } = Astro;
+
+const userId = cookies.get("user-id");
+
+if (!userId) {
+  return redirect("/login");
+}
+const {
+  body: { balance, id },
+} = await fetch(`http://localhost:8080/api/accounts/${userId.value}`).then(
+  (res) => res.json(),
+);
+---
+
+<Layout title="Retirar dinero">
+  <Header />
+  <WithdrawForm balance={balance} accountId={id} client:load/>
+</Layout>
