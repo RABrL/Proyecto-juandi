@@ -33,6 +33,10 @@ Luego, ejecuta los siguientes comandos para iniciar el proyecto
 
       cd Proyecto-juandi
 
+- Inicia el contenedor de docker
+
+      docker-compose up -d
+
 - Entra a la carpeta del backend
 
       cd backend
@@ -55,11 +59,13 @@ Luego, ejecuta los siguientes comandos para iniciar el proyecto
 
 - Instala las dependencias
     
-        npm install
+      npm install
 
 - Inicia el servidor
     
-        npm run start
+      npm run start
+
+
 
 Y con eso ya tienes el proyecto corriendo localmente en el puerto :4321
 
